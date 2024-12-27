@@ -1,5 +1,7 @@
 package com.minhkakart.bigdata;
 
+import mapreduce.RandomForestMapper;
+import mapreduce.RandomForestReducer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -20,11 +22,12 @@ public class Main extends Configured implements Tool {
         Configuration conf = getConf();
         String input = conf.get("input");
         String output = conf.get("output");
-        //String n_estimators = conf.get("n_estimators");
-        //String max_depth = conf.get("max_depth");
-        //String max_features = conf.get("max_features");
-        //String min_samples_split = conf.get("min_samples_split");
-        
+        /* Configuration parameters
+        String n_estimators = conf.get("n_estimators");
+        String max_depth = conf.get("max_depth");
+        String max_features = conf.get("max_features");
+        String min_samples_split = conf.get("min_samples_split");
+        */
         
         Job job = Job.getInstance(conf, "Random Forest");
 
