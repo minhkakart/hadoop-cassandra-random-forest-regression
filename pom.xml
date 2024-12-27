@@ -8,6 +8,10 @@
     <groupId>com.minhkakart.bigdata</groupId>
     <artifactId>BigdataBtl</artifactId>
     <version>TrainRandomForest-2.0</version>
+    
+    <description>
+        Training Random Forest with Hadoop MapReduce use hdfs
+    </description>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
