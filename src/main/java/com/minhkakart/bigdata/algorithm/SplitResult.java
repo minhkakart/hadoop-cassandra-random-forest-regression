@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Phân chia tập dữ liệu thành 2 phần dựa trên một ngưỡng
  */
-@SuppressWarnings("SpellCheckingInspection")
+@SuppressWarnings({"SpellCheckingInspection", "unused"})
 public class SplitResult {
     /**
      * Dữ liệu bên nhỏ hơn hoặc bằng ngưỡng
@@ -29,7 +29,7 @@ public class SplitResult {
     /**
      * Mean Squared Error (MSE) của phân chia
      */
-    private final double mse;
+    private final double score;
 
     public SplitResult(double[][] X, double[] y, int feature, double threshold) {
         List<double[]> leftXList = new ArrayList<>();
@@ -52,9 +52,18 @@ public class SplitResult {
         this.leftY = leftYList.stream().mapToDouble(Double::doubleValue).toArray();
         this.rightY = rightYList.stream().mapToDouble(Double::doubleValue).toArray();
 
-        this.mse = calculateMSE();
+        this.score = calculateMAE();
     }
 
+    /**
+     * Tính toán Mean Absolute Error (MAE) của một phân chia
+     *
+     * @return MAE
+     */
+    private double calculateMAE() {
+        return Arrays.stream(leftY).map(y -> Math.abs(y - Arrays.stream(leftY).average().orElse(0.0))).sum() +
+                Arrays.stream(rightY).map(y -> Math.abs(y - Arrays.stream(rightY).average().orElse(0.0))).sum();
+    }
 
     /**
      * Tính toán Mean Squared Error (MSE) của một phân chia
@@ -88,7 +97,7 @@ public class SplitResult {
         return rightY;
     }
 
-    public double getMse() {
-        return mse;
+    public double getScore() {
+        return score;
     }
 }

@@ -9,13 +9,16 @@ import java.util.*;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class DecisionTree {
-    public Node root;
+    private Node root;
 
-    private final int maxDepth;
-    private final int max_features;
-    private final int min_samples_split;
+    private int maxDepth;
+    private int max_features;
+    private int min_samples_split;
     
     private static final GsonBuilder SERIALIZER = new GsonBuilder().registerTypeAdapter(Node.class, new NodeSerializer());
+
+    public DecisionTree() {
+    }
 
     public DecisionTree(int maxDepth, int max_features, int min_samples_split) {
         this.maxDepth = maxDepth;
@@ -64,7 +67,7 @@ public class DecisionTree {
             double[] thresholds = uniqueValues(X, feature);
             for (double threshold : thresholds) {
                 SplitResult split = new SplitResult(X, y, feature, threshold);
-                double mse = split.getMse();
+                double mse = split.getScore();
 
                 if (mse < bestMSE) {
                     bestMSE = mse;
@@ -139,6 +142,10 @@ public class DecisionTree {
      */
     private static double[] uniqueValues(double[][] X, int featureIndex) {
         return Arrays.stream(X).mapToDouble(row -> row[featureIndex]).distinct().toArray();
+    }
+
+    public void setRoot(Node root) {
+        this.root = root;
     }
 
     public static Gson getSerializer() {

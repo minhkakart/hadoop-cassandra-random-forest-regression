@@ -1,4 +1,4 @@
-package mapreduce;
+package com.minhkakart.bigdata.mapreduce;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -7,7 +7,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import java.io.IOException;
 
 @SuppressWarnings("SpellCheckingInspection")
-public class RandomForestMapper extends Mapper<LongWritable, Text, Text, Text> {
+public class RandomForestTrainMapper extends Mapper<LongWritable, Text, Text, Text> {
     private int numTrees; // Số lượng cây trong rừng
     private int maxFeatures; // Số lượng đặc trưng tối đa
 

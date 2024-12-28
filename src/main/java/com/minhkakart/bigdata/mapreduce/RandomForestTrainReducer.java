@@ -1,4 +1,4 @@
-package mapreduce;
+package com.minhkakart.bigdata.mapreduce;
 
 import com.minhkakart.bigdata.algorithm.DecisionTree;
 import org.apache.hadoop.conf.Configuration;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 @SuppressWarnings("SpellCheckingInspection")
-public class RandomForestReducer extends Reducer<Text, Text, Text, Text> {
+public class RandomForestTrainReducer extends Reducer<Text, Text, Text, Text> {
     private int max_depth;
     private int max_features;
     private int min_samples_split;

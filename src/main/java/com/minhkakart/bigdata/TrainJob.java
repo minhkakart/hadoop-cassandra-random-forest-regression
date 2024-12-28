@@ -1,7 +1,7 @@
 package com.minhkakart.bigdata;
 
-import mapreduce.RandomForestMapper;
-import mapreduce.RandomForestReducer;
+import com.minhkakart.bigdata.mapreduce.RandomForestTrainMapper;
+import com.minhkakart.bigdata.mapreduce.RandomForestTrainReducer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -12,9 +12,9 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-public class Main extends Configured implements Tool {
+public class TrainJob extends Configured implements Tool {
     public static void main(String[] args) throws Exception {
-        ToolRunner.run(new Configuration(), new Main(), args);
+        ToolRunner.run(new Configuration(), new TrainJob(), args);
     }
 
     @Override
@@ -31,9 +31,9 @@ public class Main extends Configured implements Tool {
         
         Job job = Job.getInstance(conf, "Random Forest");
 
-        job.setJarByClass(Main.class);
-        job.setMapperClass(RandomForestMapper.class);
-        job.setReducerClass(RandomForestReducer.class);
+        job.setJarByClass(TrainJob.class);
+        job.setMapperClass(RandomForestTrainMapper.class);
+        job.setReducerClass(RandomForestTrainReducer.class);
 
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
