@@ -1,16 +1,15 @@
-import com.minhkakart.bigdata.algorithm.DecisionTree;
-import com.minhkakart.bigdata.algorithm.Node;
-import com.minhkakart.bigdata.support.Calculator;
+import com.minhkakart.bigdata.cassandra.PlayerStatsInputFormat;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.TaskAttemptID;
+import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
 
 @SuppressWarnings("ALL")
 public class Test {
     public static void main(String[] args) throws FileNotFoundException {
+        /*
         List<DecisionTree> forest = new ArrayList<>(100);
         String forestPath = "E:/TLU_Subject/Ki_7/BigData/output/btl-test/part-r-00000";
         BufferedReader reader = new BufferedReader(new FileReader(forestPath));
@@ -54,7 +53,64 @@ public class Test {
         System.out.println("Root mean square error: " + Calculator.rootMeanSquareError(actual, predictedArr));
         System.out.println("Mean absolute error: " + Calculator.meanAbsoluteError(actual, predictedArr));
         System.out.println("Nash-Sutcliffe efficiency: " + Calculator.nashSutcliffeEfficiency(actual, predictedArr));
-        System.out.println("Coefficient of determination: " + Calculator.coefficientOfDetermination(actual, predictedArr));
+        System.out.println("Coefficient of determination: " + Calculator.coefficientOfDetermination(actual, predictedArr));*/
 
+        /*
+        int LIMIT = 1000;
+
+        CqlSession session = CqlSession.builder()
+                .addContactPoint(new InetSocketAddress("nodemaster", 9042))
+                .withLocalDatacenter("datacenter1")
+                .withKeyspace("bigdata")
+                .build();
+
+        // Count the number of rows in the table
+        String countQuery = "SELECT COUNT(*) FROM player_stats";
+        PreparedStatement countStatement = session.prepare(countQuery);
+        ResultSet count = session.execute(countStatement.bind());
+        long numRows = Objects.requireNonNull(count.one()).getLong(0);
+
+        // If the table is empty, return an empty split
+        if (numRows == 0) {
+            System.out.println("Empty table");
+        } else {
+            // Calculate the number of splits based on the number of rows
+            int numSplits = (int) Math.ceil((double) numRows / LIMIT);
+
+            // Create splits based on the number of rows
+            int currentPartition = 0;
+            long currentToken = Long.MIN_VALUE;
+            String tokenQuery = "SELECT token(id) as \"token\" FROM player_stats WHERE token(id) > ? LIMIT ? ALLOW FILTERING";
+            for (int i = 0; i < numSplits; i++) {
+                PreparedStatement tokenStatement = session.prepare(tokenQuery);
+                ResultSet tokens = session.execute(tokenStatement.bind(currentToken, LIMIT));
+                List<Row> rows = tokens.all();
+                currentToken = rows.get(rows.size() - 1).getLong("token");
+                System.out.println(String.format("Partition %d: %d rows, token: %s", i, rows.size(), currentToken));
+            }
+        }
+
+        session.close();
+        */
+
+
+        PlayerStatsInputFormat.PlayerStatsSplit split = new PlayerStatsInputFormat.PlayerStatsSplit();
+        Configuration conf = new Configuration();
+        conf.set("cassandra.contact.point", "nodemaster");
+        conf.set("cassandra.input.keyspace", "bigdata");
+        conf.set("cassandra.input.datacenter", "datacenter1");
+        TaskAttemptID taskAttemptID = new TaskAttemptID("job", 1, true, 1, 1);
+        TaskAttemptContext context = new TaskAttemptContextImpl(conf, taskAttemptID);
+        PlayerStatsInputFormat.CassandraRecordReader reader = new PlayerStatsInputFormat.CassandraRecordReader();
+        reader.initialize(split, context);
+        while (reader.nextKeyValue()) {
+            System.out.println(String.format("Progress: %.2f%%, loaded: %d/%d", reader.getProgress() * 100, reader.getLoadedItems(), reader.getTotalItems()));
+            System.out.println(reader.getToken() + " " + reader.getCurrentValue());
+        }
+        
+        reader.close();
+        
+        
     }
+
 }

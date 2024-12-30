@@ -124,10 +124,14 @@ public class DecisionTree {
 
         // So sánh giá trị của đặc trưng tại nút hiện tại với ngưỡng
         if (sample[node.getFeature()] <= node.getThreshold()) {
-            assert node.getLeft() != null;
+            if (node.getLeft() == null) {
+                return node.getValue();
+            }
             return traverseTree(node.getLeft(), sample);
         } else {
-            assert node.getRight() != null;
+            if (node.getRight() == null) {
+                return node.getValue();
+            }
             return traverseTree(node.getRight(), sample);
         }
     }

@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings("SpellCheckingInspection")
 public class PlayerStatsInputFormat extends InputFormat<LongWritable, Text> {
     private static final int LIMIT = 1000;
 

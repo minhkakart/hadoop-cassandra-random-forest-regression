@@ -4,6 +4,20 @@ import java.util.Arrays;
 
 @SuppressWarnings({"SpellCheckingInspection", "unused"})
 public class Calculator {
+
+    /**
+     * Tính trung vị của mảng
+     */
+    public static double median(double[] arr) {
+        Arrays.sort(arr);
+        int n = arr.length;
+        if (n % 2 == 0) {
+            return (arr[n / 2 - 1] + arr[n / 2]) / 2;
+        } else {
+            return arr[n / 2];
+        }
+    }
+
     /**
      * Tính trung bình cộng của mảng
      *

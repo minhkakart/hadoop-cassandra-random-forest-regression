@@ -36,7 +36,7 @@ public class TrainCassandraJob extends Configured implements Tool {
         String cassandra_input_datacenter = conf.set("cassandra.input.datacenter", "datacenter1");
         */
 
-        Job job = Job.getInstance(conf, "Random Forest");
+        Job job = Job.getInstance(conf, "Random Forest Cassandra");
 
         job.setJarByClass(TrainCassandraJob.class);
         job.setMapperClass(RandomForestTrainMapper.class);
