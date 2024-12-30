@@ -7,10 +7,10 @@
 
     <groupId>com.minhkakart.bigdata</groupId>
     <artifactId>BigdataBtl</artifactId>
-    <version>RandomForest-2.0</version>
+    <version>RandomForest-3.0</version>
     
     <description>
-        Training Random Forest with Hadoop MapReduce use hdfs
+        Training Random Forest with Hadoop MapReduce use Cassandra as data source
     </description>
 
     <properties>
@@ -34,6 +34,11 @@
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
             <version>3.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cassandra</groupId>
+            <artifactId>java-driver-core</artifactId>
+            <version>4.18.1</version>
         </dependency>
 
     </dependencies>
