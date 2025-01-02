@@ -1,10 +1,17 @@
-import com.minhkakart.bigdata.cassandra.PlayerStatsInputFormat;
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.CqlSessionBuilder;
+import com.datastax.oss.driver.api.core.cql.*;
+import com.minhkakart.bigdata.cassandra.PlayerStatInputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 
 import java.io.FileNotFoundException;
+import java.net.InetSocketAddress;
+import java.util.UUID;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @SuppressWarnings("ALL")
 public class Test {
@@ -94,23 +101,70 @@ public class Test {
         */
 
 
-        PlayerStatsInputFormat.PlayerStatsSplit split = new PlayerStatsInputFormat.PlayerStatsSplit();
+        /*PlayerStatInputFormat.PlayerStatsSplit split = new PlayerStatInputFormat.PlayerStatsSplit();
         Configuration conf = new Configuration();
         conf.set("cassandra.contact.point", "nodemaster");
         conf.set("cassandra.input.keyspace", "bigdata");
         conf.set("cassandra.input.datacenter", "datacenter1");
         TaskAttemptID taskAttemptID = new TaskAttemptID("job", 1, true, 1, 1);
         TaskAttemptContext context = new TaskAttemptContextImpl(conf, taskAttemptID);
-        PlayerStatsInputFormat.CassandraRecordReader reader = new PlayerStatsInputFormat.CassandraRecordReader();
+        PlayerStatInputFormat.CassandraRecordReader reader = new PlayerStatInputFormat.CassandraRecordReader();
         reader.initialize(split, context);
         while (reader.nextKeyValue()) {
             System.out.println(String.format("Progress: %.2f%%, loaded: %d/%d", reader.getProgress() * 100, reader.getLoadedItems(), reader.getTotalItems()));
             System.out.println(reader.getToken() + " " + reader.getCurrentValue());
         }
         
-        reader.close();
+        reader.close();*/
+
+        /*// Connect to Cassandra
+        String contactPoint = "nodemaster";
+        String datacenter = "datacenter1";
+        String keyspace = "bigdata";
+        String table = "trained_trees";
+        CqlSession session = new CqlSessionBuilder()
+                .addContactPoint(new InetSocketAddress(contactPoint, 9042))
+                .withLocalDatacenter(datacenter)
+                .withKeyspace(keyspace)
+                .build();
+
+        // Prepare CQL statement
+        String cql = "INSERT INTO " + keyspace + "." + table + " (id, session, value) VALUES (?, ?, ?)";
+        PreparedStatement insertStatement = session.prepare(cql);
+
+        // Execute the statement in batches
+        BatchStatementBuilder batchBuilder = BatchStatement.builder(BatchType.LOGGED);
+        for (int i = 0; i < 9; i++) {
+            BoundStatement boundStatement = insertStatement.bind(UUID.randomUUID(), 1, "test_" + i);
+            batchBuilder.addStatement(boundStatement);
+        }
+        CompletionStage resultSet = session.executeAsync(batchBuilder.build());
+        resultSet.toCompletableFuture().join();
+
+//        session.execute(preparedStatement.bind(UUID.randomUUID(), 1, "test"));
+
+        session.close();
+
+        System.out.println("Done");*/
+
+        String contactPoint = "nodemaster";
+        String datacenter = "datacenter1";
+        String keyspace = "bigdata";
+        CqlSession session = new CqlSessionBuilder()
+                .addContactPoint(new InetSocketAddress(contactPoint, 9042))
+                .withLocalDatacenter(datacenter)
+                .withKeyspace(keyspace)
+                .build();
         
+        String cql = "SELECT max(session) FROM trained_trees";
+        PreparedStatement preparedStatement = session.prepare(cql);
+        ResultSet resultSet = session.execute(preparedStatement.bind());
+        Row row = resultSet.one();
+        System.out.println(row.isNull(0));
+        System.out.println(row.getInt(0));
         
+        session.close();
+
     }
 
 }

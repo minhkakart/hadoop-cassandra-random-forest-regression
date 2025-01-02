@@ -1,6 +1,5 @@
 package com.minhkakart.bigdata;
 
-import com.minhkakart.bigdata.cassandra.PlayerStatsInputFormat;
 import com.minhkakart.bigdata.mapreduce.RandomForestTrainMapper;
 import com.minhkakart.bigdata.mapreduce.RandomForestTrainReducer;
 import org.apache.hadoop.conf.Configuration;
@@ -32,9 +31,9 @@ public class TrainJob extends Configured implements Tool {
         
         // Configurations for Cassandra
         String cassandra_contact_point = conf.get("cassandra.contact.point");
-        String cassandra_input_keyspace = conf.get("cassandra.input.keyspace");
+        String cassandra_keyspace = conf.get("cassandra.keyspace");
         String cassandra_input_columnfamily = conf.get("cassandra.input.columnfamily");
-        String cassandra_input_datacenter = conf.set("cassandra.input.datacenter", "datacenter1");
+        String cassandra_datacenter = conf.set("cassandra.datacenter", "datacenter1");
         */
         
         Job job = Job.getInstance(conf, "Random Forest");

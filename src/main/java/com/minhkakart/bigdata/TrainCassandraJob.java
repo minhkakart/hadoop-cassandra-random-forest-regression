@@ -1,6 +1,7 @@
 package com.minhkakart.bigdata;
 
-import com.minhkakart.bigdata.cassandra.PlayerStatsInputFormat;
+import com.minhkakart.bigdata.cassandra.PlayerStatInputFormat;
+import com.minhkakart.bigdata.cassandra.PlayerStatOutputFormat;
 import com.minhkakart.bigdata.mapreduce.RandomForestTrainMapper;
 import com.minhkakart.bigdata.mapreduce.RandomForestTrainReducer;
 import org.apache.hadoop.conf.Configuration;
@@ -31,9 +32,9 @@ public class TrainCassandraJob extends Configured implements Tool {
         
         // Configurations for Cassandra
         String cassandra_contact_point = conf.get("cassandra.contact.point");
-        String cassandra_input_keyspace = conf.get("cassandra.input.keyspace");
+        String cassandra_keyspace = conf.get("cassandra.keyspace");
         String cassandra_input_columnfamily = conf.get("cassandra.input.columnfamily");
-        String cassandra_input_datacenter = conf.set("cassandra.input.datacenter", "datacenter1");
+        String cassandra_datacenter = conf.set("cassandra.datacenter", "datacenter1");
         */
 
         Job job = Job.getInstance(conf, "Random Forest Cassandra");
@@ -45,10 +46,9 @@ public class TrainCassandraJob extends Configured implements Tool {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 
-        job.setInputFormatClass(PlayerStatsInputFormat.class);
+        job.setInputFormatClass(PlayerStatInputFormat.class);
+        job.setOutputFormatClass(PlayerStatOutputFormat.class);
 
-//        FileInputFormat.addInputPath(job, new Path(input));
-        FileOutputFormat.setOutputPath(job, new Path(output));
 
         return job.waitForCompletion(true) ? 0 : 1;
     }

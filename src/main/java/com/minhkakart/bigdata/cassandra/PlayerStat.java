@@ -5,6 +5,7 @@ import com.datastax.oss.driver.api.core.cql.Row;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class PlayerStat {
     private static int count = 0;
     
