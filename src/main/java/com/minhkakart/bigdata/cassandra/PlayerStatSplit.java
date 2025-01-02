@@ -12,37 +12,37 @@ import java.io.IOException;
  */
 @SuppressWarnings("unused")
 public class PlayerStatSplit extends InputSplit implements Writable {
-    private long token;
+	private long token;
 
-    public PlayerStatSplit() {
-        this.token = Long.MIN_VALUE;
-    }
+	public PlayerStatSplit() {
+		this.token = Long.MIN_VALUE;
+	}
 
-    public PlayerStatSplit(long token) {
-        this.token = token;
-    }
+	public PlayerStatSplit(long token) {
+		this.token = token;
+	}
 
-    @Override
-    public long getLength() {
-        return 1;
-    }
+	@Override
+	public long getLength() {
+		return 1;
+	}
 
-    @Override
-    public String[] getLocations() {
-        return new String[0];
-    }
+	@Override
+	public String[] getLocations() {
+		return new String[0];
+	}
 
-    public long getToken() {
-        return token;
-    }
+	public long getToken() {
+		return token;
+	}
 
-    @Override
-    public void write(DataOutput out) throws IOException {
-        out.writeLong(token);
-    }
+	@Override
+	public void write(DataOutput out) throws IOException {
+		out.writeLong(token);
+	}
 
-    @Override
-    public void readFields(DataInput in) throws IOException {
-        token = in.readLong();
-    }
+	@Override
+	public void readFields(DataInput in) throws IOException {
+		token = in.readLong();
+	}
 }
