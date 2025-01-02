@@ -19,8 +19,6 @@ public class TrainCassandraJob extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
         Configuration conf = getConf();
-//        String input = conf.get("input");
-        String output = conf.get("output");
         /* Configuration parameters
         // Configurations for Random Forest
         String n_estimators = conf.get("n_estimators");
