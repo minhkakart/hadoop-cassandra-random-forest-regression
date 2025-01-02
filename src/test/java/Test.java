@@ -1,17 +1,9 @@
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.CqlSessionBuilder;
 import com.datastax.oss.driver.api.core.cql.*;
-import com.minhkakart.bigdata.cassandra.PlayerStatInputFormat;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.mapreduce.TaskAttemptContext;
-import org.apache.hadoop.mapreduce.TaskAttemptID;
-import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 
 import java.io.FileNotFoundException;
 import java.net.InetSocketAddress;
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 @SuppressWarnings("ALL")
 public class Test {
