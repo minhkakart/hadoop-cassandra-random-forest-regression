@@ -38,7 +38,7 @@ Hadoop for distributed processing and integrates with Cassandra for data storage
                     |-----|-----|-----------|-----------|-----------|--------------------------|-----------|----------|---------|-----------|-----------|--------|-----------|
        ```
          CREATE TABLE IF NOT EXISTS bigdata.player_stats (
-             id INT PRIMARY KEY,
+             id UUID PRIMARY KEY,
              age INT,
              height_cm INT,
              weight_kg INT,
@@ -59,7 +59,7 @@ Hadoop for distributed processing and integrates with Cassandra for data storage
 
         ```
           CREATE TABLE IF NOT EXISTS bigdata.trained_trees (
-                id INT PRIMARY KEY,
+                id UUID PRIMARY KEY,
                 session int,
                 tree_name text,
                 tree text
