@@ -29,8 +29,9 @@ public class TrainCassandraJob extends Configured implements Tool {
         // Configurations for Cassandra
         String cassandra_contact_point = conf.get("cassandra.contact.point");
         String cassandra_keyspace = conf.get("cassandra.keyspace");
-        String cassandra_input_columnfamily = conf.get("cassandra.input.columnfamily");
         String cassandra_datacenter = conf.set("cassandra.datacenter", "datacenter1");
+        String cassandra_input_columnfamily = conf.get("cassandra.input.columnfamily");
+        String cassandra_output_columnfamily = conf.get("cassandra.output.columnfamily");
         */
 
 		Job job = Job.getInstance(conf, "Random Forest Cassandra");

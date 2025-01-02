@@ -53,9 +53,9 @@ public class PlayerStatInputFormat extends InputFormat<LongWritable, Text> {
 			// Create splits based on the number of rows
 			long currentToken = Long.MIN_VALUE;
 			for (int i = 0; i < numSplits; i++) {
-				String tokenQuery = "SELECT token(id) FROM " + table + " LIMIT ? ALLOW FILTERING";
+				String tokenQuery = "SELECT token(id) FROM " + table + " WHERE token(id) > ?  LIMIT ? ALLOW FILTERING";
 				PreparedStatement tokenStatement = session.prepare(tokenQuery);
-				ResultSet tokens = session.execute(tokenStatement.bind(LIMIT));
+				ResultSet tokens = session.execute(tokenStatement.bind(currentToken, LIMIT));
 				List<Row> rows = tokens.all();
 				long nextToken = rows.get(rows.size() - 1).getLong(0);
 				splits.add(new PlayerStatSplit(currentToken));
