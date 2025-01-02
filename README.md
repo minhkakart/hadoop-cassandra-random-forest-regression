@@ -109,5 +109,3 @@ Update the configuration file with the following parameters:
     - `TrainCassandraJob`: Main job class for training the Random Forest model using Cassandra.
 
 ## License
-
-This project belongs to MinhKakart.
