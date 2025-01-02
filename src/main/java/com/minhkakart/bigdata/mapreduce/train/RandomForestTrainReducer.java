@@ -1,4 +1,4 @@
-package com.minhkakart.bigdata.mapreduce;
+package com.minhkakart.bigdata.mapreduce.train;
 
 import com.minhkakart.bigdata.algorithm.DecisionTree;
 import org.apache.hadoop.conf.Configuration;

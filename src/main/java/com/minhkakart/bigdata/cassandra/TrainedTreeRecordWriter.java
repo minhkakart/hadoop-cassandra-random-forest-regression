@@ -15,13 +15,13 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @SuppressWarnings("DuplicatedCode")
-public class PlayerStatRecordWriter extends RecordWriter<Text, Text> {
+public class TrainedTreeRecordWriter extends RecordWriter<Text, Text> {
     private final CqlSession session;
     private final PreparedStatement preparedStatement;
     private final ConcurrentLinkedQueue<BoundStatement> statementQueue;
     private final int sessionId;
 
-    public PlayerStatRecordWriter(Configuration conf) {
+    public TrainedTreeRecordWriter(Configuration conf) {
         // Read configuration
         String contactPoint = conf.get("cassandra.contact.point", "localhost");
         String datacenter = conf.get("cassandra.datacenter", "datacenter1");

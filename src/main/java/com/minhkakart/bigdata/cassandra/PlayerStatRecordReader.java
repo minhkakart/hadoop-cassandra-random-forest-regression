@@ -65,7 +65,7 @@ public class PlayerStatRecordReader extends RecordReader<LongWritable, Text> {
         if (iterator != null && iterator.hasNext()) {
             Row row = iterator.next();
             PlayerStat playerStat = new PlayerStat(row);
-            currentKey.set(playerStat.getId());
+            currentKey.set(playerStat.getId().toString());
             currentValue.set(playerStat.toCsv());
             loadedItems++;
             return true;

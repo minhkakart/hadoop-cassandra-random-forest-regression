@@ -1,9 +1,9 @@
 package com.minhkakart.bigdata;
 
 import com.minhkakart.bigdata.cassandra.PlayerStatInputFormat;
-import com.minhkakart.bigdata.cassandra.PlayerStatOutputFormat;
-import com.minhkakart.bigdata.mapreduce.RandomForestTrainMapper;
-import com.minhkakart.bigdata.mapreduce.RandomForestTrainReducer;
+import com.minhkakart.bigdata.cassandra.TrainedTreeOutputFormat;
+import com.minhkakart.bigdata.mapreduce.train.RandomForestTrainMapper;
+import com.minhkakart.bigdata.mapreduce.train.RandomForestTrainReducer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.io.Text;
@@ -43,7 +43,7 @@ public class TrainCassandraJob extends Configured implements Tool {
         job.setOutputValueClass(Text.class);
 
         job.setInputFormatClass(PlayerStatInputFormat.class);
-        job.setOutputFormatClass(PlayerStatOutputFormat.class);
+        job.setOutputFormatClass(TrainedTreeOutputFormat.class);
 
 
         return job.waitForCompletion(true) ? 0 : 1;

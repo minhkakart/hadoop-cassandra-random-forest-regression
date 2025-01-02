@@ -1,7 +1,7 @@
 package com.minhkakart.bigdata;
 
-import com.minhkakart.bigdata.mapreduce.RandomForestTrainMapper;
-import com.minhkakart.bigdata.mapreduce.RandomForestTrainReducer;
+import com.minhkakart.bigdata.mapreduce.train.RandomForestTrainMapper;
+import com.minhkakart.bigdata.mapreduce.train.RandomForestTrainReducer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;

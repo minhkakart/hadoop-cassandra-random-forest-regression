@@ -3,13 +3,13 @@ package com.minhkakart.bigdata.cassandra;
 
 import com.datastax.oss.driver.api.core.cql.Row;
 
-import java.util.Objects;
+import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class PlayerStat {
     private static int count = 0;
     
-    private final String id;
+    private final UUID id;
     private final int age;
     private final int defending;
     private final int dribbling;
@@ -25,7 +25,7 @@ public class PlayerStat {
 
     public PlayerStat(Row row) {
         count++;
-        this.id = Objects.requireNonNull(row.getUuid("id")).toString();
+        this.id = row.getUuid("id");
         this.age = row.getInt("age");
         this.defending = row.getInt("defending");
         this.dribbling = row.getInt("dribbling");
@@ -40,7 +40,7 @@ public class PlayerStat {
         this.value_eur = row.getInt("value_eur");
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -99,7 +99,7 @@ public class PlayerStat {
     @Override
     public String toString() {
         return count + ". PlayerStat{" +
-                "id='" + id + '\'' +
+                "id='" + id.toString() + '\'' +
                 ", age=" + age +
                 ", defending=" + defending +
                 ", dribbling=" + dribbling +
@@ -116,7 +116,7 @@ public class PlayerStat {
     }
     
     public String toRecord() {
-        return id + "," + age + "," + defending + "," + dribbling + "," + height_cm + "," + international_reputation + "," + passing + "," + physic + "," + potential + "," + shooting + "," + weak_foot + "," + weight_kg + "," + value_eur;
+        return id.toString() + "," + age + "," + defending + "," + dribbling + "," + height_cm + "," + international_reputation + "," + passing + "," + physic + "," + potential + "," + shooting + "," + weak_foot + "," + weight_kg + "," + value_eur;
     }
     
     public String toCsv() {

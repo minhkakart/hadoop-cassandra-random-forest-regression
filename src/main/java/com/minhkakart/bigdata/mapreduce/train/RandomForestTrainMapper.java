@@ -1,4 +1,4 @@
-package com.minhkakart.bigdata.mapreduce;
+package com.minhkakart.bigdata.mapreduce.train;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
