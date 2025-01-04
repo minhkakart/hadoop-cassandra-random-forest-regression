@@ -19,7 +19,7 @@ import java.util.Iterator;
  * RecordReader for Cassandra rows
  */
 @SuppressWarnings("unused")
-public class PlayerStatRecordReader extends RecordReader<LongWritable, Text> {
+public class PlayerStatRecordReader extends RecordReader<Text, Text> {
 	private Iterator<Row> iterator;
 	private final Text currentKey = new Text();
 	private final Text currentValue = new Text();
@@ -74,8 +74,8 @@ public class PlayerStatRecordReader extends RecordReader<LongWritable, Text> {
 	}
 
 	@Override
-	public LongWritable getCurrentKey() {
-		return new LongWritable(loadedItems);
+	public Text getCurrentKey() {
+		return new Text(currentKey);
 	}
 
 	@Override

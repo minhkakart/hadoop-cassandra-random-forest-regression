@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class PlayerStatInputFormat extends InputFormat<LongWritable, Text> {
+public class PlayerStatInputFormat extends InputFormat<Text, Text> {
 	public static final int LIMIT = 1000;
 	private static final int MAX_ITEMS = 5000;
 
@@ -68,7 +68,7 @@ public class PlayerStatInputFormat extends InputFormat<LongWritable, Text> {
 	}
 
 	@Override
-	public RecordReader<LongWritable, Text> createRecordReader(InputSplit split, TaskAttemptContext context) {
+	public RecordReader<Text, Text> createRecordReader(InputSplit split, TaskAttemptContext context) {
 		return new PlayerStatRecordReader();
 	}
 
