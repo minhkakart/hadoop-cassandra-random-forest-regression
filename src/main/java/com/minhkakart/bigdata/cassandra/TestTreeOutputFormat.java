@@ -4,22 +4,20 @@ import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.*;
 
-import java.io.IOException;
-
 public class TestTreeOutputFormat extends OutputFormat<Text, DoubleWritable> {
 
     @Override
-    public RecordWriter<Text, DoubleWritable> getRecordWriter(TaskAttemptContext taskAttemptContext) throws IOException, InterruptedException {
+    public RecordWriter<Text, DoubleWritable> getRecordWriter(TaskAttemptContext taskAttemptContext) {
         return new TestTreesRecordWriter(taskAttemptContext.getConfiguration());
     }
 
     @Override
-    public void checkOutputSpecs(JobContext jobContext) throws IOException, InterruptedException {
+    public void checkOutputSpecs(JobContext jobContext) {
 
     }
 
     @Override
-    public OutputCommitter getOutputCommitter(TaskAttemptContext taskAttemptContext) throws IOException, InterruptedException {
+    public OutputCommitter getOutputCommitter(TaskAttemptContext taskAttemptContext) {
         return new EmptyOutputCommitter();
     }
 }
