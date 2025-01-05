@@ -20,6 +20,6 @@ public class TestTreeOutputFormat extends OutputFormat<Text, DoubleWritable> {
 
     @Override
     public OutputCommitter getOutputCommitter(TaskAttemptContext taskAttemptContext) throws IOException, InterruptedException {
-        return new TrainedTreeOutputCommitter();
+        return new EmptyOutputCommitter();
     }
 }

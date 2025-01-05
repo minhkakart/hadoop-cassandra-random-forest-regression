@@ -19,22 +19,7 @@ public class TrainCassandraJob extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
         Configuration conf = getConf();
-        /* Configuration parameters
-        // Configurations for Random Forest
-        String n_estimators = conf.get("n_estimators");
-        String max_depth = conf.get("max_depth");
-        String max_features = conf.get("max_features");
-        String min_samples_split = conf.get("min_samples_split");
-        
-        // Configurations for Cassandra
-        String cassandra_contact_point = conf.get("cassandra.contact.point");
-        String cassandra_keyspace = conf.get("cassandra.keyspace");
-        String cassandra_datacenter = conf.set("cassandra.datacenter", "datacenter1");
-        String cassandra_input_columnfamily = conf.get("cassandra.input.columnfamily");
-        String cassandra_output_columnfamily = conf.get("cassandra.output.columnfamily");
-        */
-
-        Job job = Job.getInstance(conf, "Random Forest Cassandra");
+        Job job = Job.getInstance(conf, "Random Forest Cassandra Training");
 
         job.setJarByClass(TrainCassandraJob.class);
         job.setMapperClass(RandomForestTrainMapper.class);
@@ -45,7 +30,6 @@ public class TrainCassandraJob extends Configured implements Tool {
 
         job.setInputFormatClass(PlayerStatInputFormat.class);
         job.setOutputFormatClass(TrainedTreeOutputFormat.class);
-
 
         return job.waitForCompletion(true) ? 0 : 1;
     }

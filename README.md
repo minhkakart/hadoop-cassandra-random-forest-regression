@@ -35,7 +35,7 @@ Hadoop for distributed processing and integrates with Cassandra for data storage
        family with the following schema:
 
        | id  | age | height_cm | weight_kg | potential | international_reputation | weak_foot | shooting | passing | dribbling | defending | physic | value_eur |
-                           |-----|-----|-----------|-----------|-----------|--------------------------|-----------|----------|---------|-----------|-----------|--------|-----------|
+                                                |-----|-----|-----------|-----------|-----------|--------------------------|-----------|----------|---------|-----------|-----------|--------|-----------|
        ```
          CREATE TABLE IF NOT EXISTS bigdata.player_stats (
              id UUID PRIMARY KEY,
@@ -65,6 +65,17 @@ Hadoop for distributed processing and integrates with Cassandra for data storage
                 tree text
           );
         ```
+    3. **Prepare the predict table:**
+       Create an empty column family `kq` to store the predicted values.
+
+        ```
+          CREATE TABLE IF NOT EXISTS bigdata.kq (
+                id UUID PRIMARY KEY,
+                session int,
+                record_id UUID,
+                value_eur int
+          );
+        ```
 
 ## Configuration
 
@@ -77,16 +88,16 @@ Update the configuration file with the following parameters:
 - `cassandra.contact.point`: Cassandra contact point (e.g., `localhost`)
 - `cassandra.datacenter`: Cassandra datacenter (default: `datacenter1`)
 - `cassandra.keyspace`: Keyspace in Cassandra
-- `cassandra.input.columnfamily`: Input column family in Cassandra
-- `cassandra.output.columnfamily`: Output column family in Cassandra
-- `cassandra.predicted.columnfamily`: Output for predicted values in Cassandra
+- `cassandra.input.columnfamily`: Input table in Cassandra
+- `cassandra.output.columnfamily`: Output table in Cassandra
+- `cassandra.predicted.columnfamily`: Output table for predicted values in Cassandra
 
 ## Running the Job
 
 1. **Submit the Hadoop job:**
 
    ```sh
-   hadoop jar target/BigdataBtl-RandomForest-3.0.jar com.minhkakart.bigdata.TrainCassandraJob -D n_estimators=100 -D max_depth=10 -D max_features=5 -D min_samples_split=2 -D cassandra.contact.point=localhost -D cassandra.keyspace=bigdata -D cassandra.input.columnfamily=player_stats -D cassandra.output.columnfamily=trained_trees
+   hadoop jar target/BigdataBtl-RandomForest-3.0.jar com.minhkakart.bigdata.TrainCassandraJob -D n_estimators=100 -D max_depth=10 -D max_features=5 -D min_samples_split=2 -D cassandra.contact.point=localhost -D cassandra.keyspace=bigdata -D cassandra.input.columnfamily=player_stats -D cassandra.output.columnfamily=trained_trees -D cassandra.predicted.columnfamily=kq
    ```
 
 2. **Monitor the job:**
@@ -102,12 +113,14 @@ Update the configuration file with the following parameters:
     - `TrainedTree`: Represents the output data schema.
     - `PlayerStatsRecordReader`: Reads the input data from Cassandra.
     - `TrainedTreeRecordWriter`: Writes the output data to Cassandra.
+    - `TestTreesRecordWriter`: Writes the predicted values to Cassandra.
 - `com.minhkakart.bigdata.mapreduce`: Contains the Hadoop map-reduce implementation.
     - `train.RandomForestTrainMapper`: Mapper class for training the Random Forest model.
     - `train.RandomForestTrainReducer`: Reducer class for training the Random Forest model.
     - `test.RandomForestTestMapper`: Mapper class for testing the Random Forest model.
     - `test.RandomForestTestReducer`: Reducer class for testing
 - `com.minhkakart.bigdata`: Contains the main job class.
-    - `TrainCassandraJob`: Main job class for training the Random Forest model using Cassandra.
+    - `TrainCassandraJob`: Main job class for training the Random Forest model.
+    - `TestCassandraJob`: Main job class for testing the Random Forest model.
 
 ## License

@@ -4,7 +4,7 @@ import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.OutputCommitter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
-public class TrainedTreeOutputCommitter extends OutputCommitter {
+public class EmptyOutputCommitter extends OutputCommitter {
     @Override
     public void setupJob(JobContext jobContext) {
         // Do nothing

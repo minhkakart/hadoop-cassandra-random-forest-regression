@@ -16,7 +16,7 @@ public class TrainedTreeOutputFormat extends OutputFormat<Text, Text> {
 
     @Override
     public OutputCommitter getOutputCommitter(TaskAttemptContext taskAttemptContext) {
-        return new TrainedTreeOutputCommitter();
+        return new EmptyOutputCommitter();
     }
 
 }
