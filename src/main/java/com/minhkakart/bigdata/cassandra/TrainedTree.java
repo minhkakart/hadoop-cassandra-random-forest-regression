@@ -6,40 +6,40 @@ import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class TrainedTree {
-	private final UUID id;
-	private final int session;
-	private final String tree_name;
-	private final String value;
+    private final UUID id;
+    private final int session;
+    private final String tree_name;
+    private final String value;
 
-	public TrainedTree(Row row) {
-		this.id = row.getUuid("id");
-		this.session = row.getInt("session");
-		this.tree_name = row.getString("tree_name");
-		this.value = row.getString("value");
-	}
+    public TrainedTree(Row row) {
+        this.id = row.getUuid("id");
+        this.session = row.getInt("session");
+        this.tree_name = row.getString("tree_name");
+        this.value = row.getString("value");
+    }
 
-	public UUID getId() {
-		return id;
-	}
+    public UUID getId() {
+        return id;
+    }
 
-	public int getSession() {
-		return session;
-	}
+    public int getSession() {
+        return session;
+    }
 
-	public String getTree_name() {
-		return tree_name;
-	}
+    public String getTree_name() {
+        return tree_name;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public String toString() {
-		return "TrainedTree{" +
-			   "id=" + id +
-			   ", session=" + session +
-			   ", tree_name='" + tree_name + '\'' +
-			   ", value='" + value + '\'' +
-			   '}';
-	}
+    public String toString() {
+        return "TrainedTree{" +
+                "id=" + id +
+                ", session=" + session +
+                ", tree_name='" + tree_name + '\'' +
+                ", value='" + value + '\'' +
+                '}';
+    }
 }

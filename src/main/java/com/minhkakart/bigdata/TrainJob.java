@@ -13,15 +13,15 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 public class TrainJob extends Configured implements Tool {
-	public static void main(String[] args) throws Exception {
-		ToolRunner.run(new Configuration(), new TrainJob(), args);
-	}
+    public static void main(String[] args) throws Exception {
+        ToolRunner.run(new Configuration(), new TrainJob(), args);
+    }
 
-	@Override
-	public int run(String[] args) throws Exception {
-		Configuration conf = getConf();
-		String input = conf.get("input");
-		String output = conf.get("output");
+    @Override
+    public int run(String[] args) throws Exception {
+        Configuration conf = getConf();
+        String input = conf.get("input");
+        String output = conf.get("output");
         /* Configuration parameters
         // Configurations for Random Forest
         String n_estimators = conf.get("n_estimators");
@@ -36,18 +36,18 @@ public class TrainJob extends Configured implements Tool {
         String cassandra_datacenter = conf.set("cassandra.datacenter", "datacenter1");
         */
 
-		Job job = Job.getInstance(conf, "Random Forest");
+        Job job = Job.getInstance(conf, "Random Forest");
 
-		job.setJarByClass(TrainJob.class);
-		job.setMapperClass(RandomForestTrainMapper.class);
-		job.setReducerClass(RandomForestTrainReducer.class);
+        job.setJarByClass(TrainJob.class);
+        job.setMapperClass(RandomForestTrainMapper.class);
+        job.setReducerClass(RandomForestTrainReducer.class);
 
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(Text.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(Text.class);
 
-		FileInputFormat.addInputPath(job, new Path(input));
-		FileOutputFormat.setOutputPath(job, new Path(output));
+        FileInputFormat.addInputPath(job, new Path(input));
+        FileOutputFormat.setOutputPath(job, new Path(output));
 
-		return job.waitForCompletion(true) ? 0 : 1;
-	}
+        return job.waitForCompletion(true) ? 0 : 1;
+    }
 }

@@ -30,7 +30,7 @@ public class TestTreesRecordWriter extends RecordWriter<Text, DoubleWritable> {
         datacenter = conf.get("cassandra.datacenter", "datacenter1");
         keyspace = conf.get("cassandra.keyspace");
         trainTable = conf.get("cassandra.output.columnfamily");
-        kqTable = conf.get("cassandra.output.kq.columnfamily");
+        kqTable = conf.get("cassandra.predicted.columnfamily");
 
         if (keyspace == null || trainTable == null) {
             throw new IllegalArgumentException("Cassandra input configuration missing keyspace or outputTable.");
@@ -59,7 +59,7 @@ public class TestTreesRecordWriter extends RecordWriter<Text, DoubleWritable> {
 // Prepare CQL statement
         String insertStatement = "INSERT INTO " + keyspace + "." + kqTable + " (id, session, record_id, predicted_value) VALUES (?, ?, ?, ?)";
         PreparedStatement preparedStatement = session.prepare(insertStatement);
-        session.execute(preparedStatement.bind(UUID.randomUUID(),sessionId,UUID.fromString(text.toString()), doubleWritable.get()));
+        session.execute(preparedStatement.bind(UUID.randomUUID(), sessionId, UUID.fromString(text.toString()), doubleWritable.get()));
 
     }
 

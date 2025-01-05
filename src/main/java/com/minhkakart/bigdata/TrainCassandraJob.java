@@ -12,13 +12,13 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 public class TrainCassandraJob extends Configured implements Tool {
-	public static void main(String[] args) throws Exception {
-		ToolRunner.run(new Configuration(), new TrainCassandraJob(), args);
-	}
+    public static void main(String[] args) throws Exception {
+        ToolRunner.run(new Configuration(), new TrainCassandraJob(), args);
+    }
 
-	@Override
-	public int run(String[] args) throws Exception {
-		Configuration conf = getConf();
+    @Override
+    public int run(String[] args) throws Exception {
+        Configuration conf = getConf();
         /* Configuration parameters
         // Configurations for Random Forest
         String n_estimators = conf.get("n_estimators");
@@ -34,19 +34,19 @@ public class TrainCassandraJob extends Configured implements Tool {
         String cassandra_output_columnfamily = conf.get("cassandra.output.columnfamily");
         */
 
-		Job job = Job.getInstance(conf, "Random Forest Cassandra");
+        Job job = Job.getInstance(conf, "Random Forest Cassandra");
 
-		job.setJarByClass(TrainCassandraJob.class);
-		job.setMapperClass(RandomForestTrainMapper.class);
-		job.setReducerClass(RandomForestTrainReducer.class);
+        job.setJarByClass(TrainCassandraJob.class);
+        job.setMapperClass(RandomForestTrainMapper.class);
+        job.setReducerClass(RandomForestTrainReducer.class);
 
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(Text.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(Text.class);
 
-		job.setInputFormatClass(PlayerStatInputFormat.class);
-		job.setOutputFormatClass(TrainedTreeOutputFormat.class);
+        job.setInputFormatClass(PlayerStatInputFormat.class);
+        job.setOutputFormatClass(TrainedTreeOutputFormat.class);
 
 
-		return job.waitForCompletion(true) ? 0 : 1;
-	}
+        return job.waitForCompletion(true) ? 0 : 1;
+    }
 }

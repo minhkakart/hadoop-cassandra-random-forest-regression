@@ -16,78 +16,78 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 @SuppressWarnings("DuplicatedCode")
 public class TrainedTreeRecordWriter extends RecordWriter<Text, Text> {
-	private final CqlSession session;
-	private final PreparedStatement preparedStatement;
-	private final ConcurrentLinkedQueue<BoundStatement> statementQueue;
-	private final int sessionId;
+    private final CqlSession session;
+    private final PreparedStatement preparedStatement;
+    private final ConcurrentLinkedQueue<BoundStatement> statementQueue;
+    private final int sessionId;
 
-	public TrainedTreeRecordWriter(Configuration conf) {
-		// Read configuration
-		String contactPoint = conf.get("cassandra.contact.point", "localhost");
-		String datacenter = conf.get("cassandra.datacenter", "datacenter1");
-		String keyspace = conf.get("cassandra.keyspace");
-		String outputTable = conf.get("cassandra.output.columnfamily");
+    public TrainedTreeRecordWriter(Configuration conf) {
+        // Read configuration
+        String contactPoint = conf.get("cassandra.contact.point", "localhost");
+        String datacenter = conf.get("cassandra.datacenter", "datacenter1");
+        String keyspace = conf.get("cassandra.keyspace");
+        String outputTable = conf.get("cassandra.output.columnfamily");
 
-		if (keyspace == null || outputTable == null) {
-			throw new IllegalArgumentException("Cassandra input configuration missing keyspace or outputTable.");
-		}
+        if (keyspace == null || outputTable == null) {
+            throw new IllegalArgumentException("Cassandra input configuration missing keyspace or outputTable.");
+        }
 
-		// Connect to Cassandra
-		session = new CqlSessionBuilder()
-			   .addContactPoint(new InetSocketAddress(contactPoint, 9042))
-			   .withLocalDatacenter(datacenter)
-			   .withKeyspace(keyspace)
-			   .build();
+        // Connect to Cassandra
+        session = new CqlSessionBuilder()
+                .addContactPoint(new InetSocketAddress(contactPoint, 9042))
+                .withLocalDatacenter(datacenter)
+                .withKeyspace(keyspace)
+                .build();
 
-		// Reachieved last session id
-		String lastSessionIdCql = "SELECT max(session) FROM " + keyspace + "." + outputTable;
-		PreparedStatement preparedLastSession = session.prepare(lastSessionIdCql);
-		ResultSet resultSet = session.execute(preparedLastSession.bind());
-		Row lastSessionRow = resultSet.one();
-		assert lastSessionRow != null;
-		if (lastSessionRow.isNull(0)) {
-			sessionId = 1;
-		} else {
-			sessionId = lastSessionRow.getInt(0) + 1;
-		}
+        // Reachieved last session id
+        String lastSessionIdCql = "SELECT max(session) FROM " + keyspace + "." + outputTable;
+        PreparedStatement preparedLastSession = session.prepare(lastSessionIdCql);
+        ResultSet resultSet = session.execute(preparedLastSession.bind());
+        Row lastSessionRow = resultSet.one();
+        assert lastSessionRow != null;
+        if (lastSessionRow.isNull(0)) {
+            sessionId = 1;
+        } else {
+            sessionId = lastSessionRow.getInt(0) + 1;
+        }
 
-		// Prepare CQL statement
-		String insertStatement = "INSERT INTO " + keyspace + "." + outputTable + " (id, session, tree_name, value) VALUES (?, ?, ?, ?)";
-		preparedStatement = session.prepare(insertStatement);
+        // Prepare CQL statement
+        String insertStatement = "INSERT INTO " + keyspace + "." + outputTable + " (id, session, tree_name, value) VALUES (?, ?, ?, ?)";
+        preparedStatement = session.prepare(insertStatement);
 
-		// Queue for batch processing
-		statementQueue = new ConcurrentLinkedQueue<>();
-	}
+        // Queue for batch processing
+        statementQueue = new ConcurrentLinkedQueue<>();
+    }
 
-	@Override
-	public void write(Text key, Text value) throws IOException {
-		try {
-			// Bind parameters to the prepared statement
-			BoundStatement boundStatement = preparedStatement.bind(UUID.randomUUID(), sessionId, key.toString(), value.toString());
-			statementQueue.add(boundStatement);
+    @Override
+    public void write(Text key, Text value) throws IOException {
+        try {
+            // Bind parameters to the prepared statement
+            BoundStatement boundStatement = preparedStatement.bind(UUID.randomUUID(), sessionId, key.toString(), value.toString());
+            statementQueue.add(boundStatement);
 
-			// Execute the statement in batches
-			if (statementQueue.size() >= 50) {
-				flushBatch();
-			}
-		} catch (Exception e) {
-			throw new IOException("Error writing to Cassandra", e);
-		}
-	}
+            // Execute the statement in batches
+            if (statementQueue.size() >= 50) {
+                flushBatch();
+            }
+        } catch (Exception e) {
+            throw new IOException("Error writing to Cassandra", e);
+        }
+    }
 
-	private void flushBatch() {
-		BatchStatementBuilder batchBuilder = BatchStatement.builder(BatchType.LOGGED);
-		while (!statementQueue.isEmpty()) {
-			batchBuilder.addStatement(statementQueue.poll());
-		}
-		CompletionStage<AsyncResultSet> resultStage = session.executeAsync(batchBuilder.build());
-		resultStage.toCompletableFuture().join();
-	}
+    private void flushBatch() {
+        BatchStatementBuilder batchBuilder = BatchStatement.builder(BatchType.LOGGED);
+        while (!statementQueue.isEmpty()) {
+            batchBuilder.addStatement(statementQueue.poll());
+        }
+        CompletionStage<AsyncResultSet> resultStage = session.executeAsync(batchBuilder.build());
+        resultStage.toCompletableFuture().join();
+    }
 
-	@Override
-	public void close(TaskAttemptContext context) {
-		// Flush remaining statements
-		flushBatch();
-		if (session != null) session.close();
-	}
+    @Override
+    public void close(TaskAttemptContext context) {
+        // Flush remaining statements
+        flushBatch();
+        if (session != null) session.close();
+    }
 }

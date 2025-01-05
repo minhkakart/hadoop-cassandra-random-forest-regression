@@ -35,7 +35,7 @@ Hadoop for distributed processing and integrates with Cassandra for data storage
        family with the following schema:
 
        | id  | age | height_cm | weight_kg | potential | international_reputation | weak_foot | shooting | passing | dribbling | defending | physic | value_eur |
-                    |-----|-----|-----------|-----------|-----------|--------------------------|-----------|----------|---------|-----------|-----------|--------|-----------|
+                           |-----|-----|-----------|-----------|-----------|--------------------------|-----------|----------|---------|-----------|-----------|--------|-----------|
        ```
          CREATE TABLE IF NOT EXISTS bigdata.player_stats (
              id UUID PRIMARY KEY,
@@ -75,10 +75,11 @@ Update the configuration file with the following parameters:
 - `max_features`: Maximum number of features considered for splitting
 - `min_samples_split`: Minimum number of samples required to split an internal node
 - `cassandra.contact.point`: Cassandra contact point (e.g., `localhost`)
-- `cassandra.keyspace`: Keyspace in Cassandra
 - `cassandra.datacenter`: Cassandra datacenter (default: `datacenter1`)
+- `cassandra.keyspace`: Keyspace in Cassandra
 - `cassandra.input.columnfamily`: Input column family in Cassandra
 - `cassandra.output.columnfamily`: Output column family in Cassandra
+- `cassandra.predicted.columnfamily`: Output for predicted values in Cassandra
 
 ## Running the Job
 
@@ -93,18 +94,19 @@ Update the configuration file with the following parameters:
    You can monitor the job progress through the Hadoop web interface.
 
 ## Code Structure
+
 - `com.minhkakart.bigdata.algorithm`: Contains the Random Forest implementation.
-  - `DecisionTree`: Represents a decision tree.
+    - `DecisionTree`: Represents a decision tree.
 - `com.minhkakart.bigdata.cassandra`: Contains the Cassandra utilities.
-  - `PlayerStats`: Represents the input data schema.
-  - `TrainedTree`: Represents the output data schema.
-  - `PlayerStatsRecordReader`: Reads the input data from Cassandra.
-  - `TrainedTreeRecordWriter`: Writes the output data to Cassandra.
+    - `PlayerStats`: Represents the input data schema.
+    - `TrainedTree`: Represents the output data schema.
+    - `PlayerStatsRecordReader`: Reads the input data from Cassandra.
+    - `TrainedTreeRecordWriter`: Writes the output data to Cassandra.
 - `com.minhkakart.bigdata.mapreduce`: Contains the Hadoop map-reduce implementation.
-  - `train.RandomForestTrainMapper`: Mapper class for training the Random Forest model.
-  - `train.RandomForestTrainReducer`: Reducer class for training the Random Forest model.
-  - `test.RandomForestTestMapper`: Mapper class for testing the Random Forest model.
-  - `test.RandomForestTestReducer`: Reducer class for testing
+    - `train.RandomForestTrainMapper`: Mapper class for training the Random Forest model.
+    - `train.RandomForestTrainReducer`: Reducer class for training the Random Forest model.
+    - `test.RandomForestTestMapper`: Mapper class for testing the Random Forest model.
+    - `test.RandomForestTestReducer`: Reducer class for testing
 - `com.minhkakart.bigdata`: Contains the main job class.
     - `TrainCassandraJob`: Main job class for training the Random Forest model using Cassandra.
 

@@ -9,7 +9,7 @@ import java.net.InetSocketAddress;
 
 @SuppressWarnings("ALL")
 public class Test {
-	public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException {
         /*
         List<DecisionTree> forest = new ArrayList<>(100);
         String forestPath = "E:/TLU_Subject/Ki_7/BigData/output/btl-test/part-r-00000";
@@ -141,24 +141,24 @@ public class Test {
 
         System.out.println("Done");*/
 
-		String contactPoint = "nodemaster";
-		String datacenter = "datacenter1";
-		String keyspace = "bigdata";
-		CqlSession session = new CqlSessionBuilder()
-			   .addContactPoint(new InetSocketAddress(contactPoint, 9042))
-			   .withLocalDatacenter(datacenter)
-			   .withKeyspace(keyspace)
-			   .build();
+        String contactPoint = "nodemaster";
+        String datacenter = "datacenter1";
+        String keyspace = "bigdata";
+        CqlSession session = new CqlSessionBuilder()
+                .addContactPoint(new InetSocketAddress(contactPoint, 9042))
+                .withLocalDatacenter(datacenter)
+                .withKeyspace(keyspace)
+                .build();
 
-		String cql = "SELECT max(session) FROM trained_trees";
-		PreparedStatement preparedStatement = session.prepare(cql);
-		ResultSet resultSet = session.execute(preparedStatement.bind());
-		Row row = resultSet.one();
-		System.out.println(row.isNull(0));
-		System.out.println(row.getInt(0));
+        String cql = "SELECT max(session) FROM trained_trees";
+        PreparedStatement preparedStatement = session.prepare(cql);
+        ResultSet resultSet = session.execute(preparedStatement.bind());
+        Row row = resultSet.one();
+        System.out.println(row.isNull(0));
+        System.out.println(row.getInt(0));
 
-		session.close();
+        session.close();
 
-	}
+    }
 
 }

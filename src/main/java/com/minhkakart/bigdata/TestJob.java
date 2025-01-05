@@ -14,27 +14,27 @@ import org.apache.hadoop.util.ToolRunner;
 
 public class TestJob extends Configured implements Tool {
     public static void main(String[] args) throws Exception {
-		ToolRunner.run(new Configuration(), new TestJob(), args);
-	}
+        ToolRunner.run(new Configuration(), new TestJob(), args);
+    }
 
-	@Override
-	public int run(String[] args) throws Exception {
-		Configuration conf = getConf();
-
-
-		Job job = Job.getInstance(conf, "Random Forest Cassandra");
-
-		job.setJarByClass(TestJob.class);
-		job.setMapperClass(RandomForestTestMapper.class);
-		job.setReducerClass(RandomForestTestReducer.class);
-
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(DoubleWritable.class);
-
-		job.setInputFormatClass(PlayerStatInputFormat.class);
-		job.setOutputFormatClass(TestTreeOutputFormat.class);
+    @Override
+    public int run(String[] args) throws Exception {
+        Configuration conf = getConf();
 
 
-		return job.waitForCompletion(true) ? 0 : 1;
-	}
+        Job job = Job.getInstance(conf, "Random Forest Cassandra");
+
+        job.setJarByClass(TestJob.class);
+        job.setMapperClass(RandomForestTestMapper.class);
+        job.setReducerClass(RandomForestTestReducer.class);
+
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(DoubleWritable.class);
+
+        job.setInputFormatClass(PlayerStatInputFormat.class);
+        job.setOutputFormatClass(TestTreeOutputFormat.class);
+
+
+        return job.waitForCompletion(true) ? 0 : 1;
+    }
 }
