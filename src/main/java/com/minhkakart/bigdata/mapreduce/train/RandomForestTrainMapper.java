@@ -1,18 +1,17 @@
 package com.minhkakart.bigdata.mapreduce.train;
 
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
 
 @SuppressWarnings("SpellCheckingInspection")
-public class RandomForestTrainMapper extends Mapper<LongWritable, Text, Text, Text> {
+public class RandomForestTrainMapper extends Mapper<Text, Text, Text, Text> {
 	private int numTrees; // Số lượng cây trong rừng
 	private int maxFeatures; // Số lượng đặc trưng tối đa
 
 	@Override
-	protected void setup(Mapper<LongWritable, Text, Text, Text>.Context context) throws IOException, InterruptedException {
+	protected void setup(Mapper<Text, Text, Text, Text>.Context context) throws IOException, InterruptedException {
 		super.setup(context);
 
 		// Đọc tham số cấu hình
@@ -21,7 +20,7 @@ public class RandomForestTrainMapper extends Mapper<LongWritable, Text, Text, Te
 	}
 
 	@Override
-	protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+	protected void map(Text key, Text value, Context context) throws IOException, InterruptedException {
 		// Phân tích dòng dữ liệu
 		String line = value.toString();
 		String[] parts = line.split(",");

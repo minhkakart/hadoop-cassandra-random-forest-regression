@@ -141,21 +141,21 @@ public class Test {
 
         System.out.println("Done");*/
 
-        String contactPoint = "nodemaster";
         String datacenter = "datacenter1";
-        String keyspace = "bigdata";
+        String keyspace = "bigdata_btl";
         CqlSession session = new CqlSessionBuilder()
-                .addContactPoint(new InetSocketAddress(contactPoint, 9042))
+                .addContactPoint(new InetSocketAddress("nodemaster", 9042))
+                .addContactPoint(new InetSocketAddress("node2", 9042))
                 .withLocalDatacenter(datacenter)
                 .withKeyspace(keyspace)
                 .build();
 
-        String cql = "SELECT max(session) FROM trained_trees";
+        String cql = "SELECT count(id) FROM player_stats";
         PreparedStatement preparedStatement = session.prepare(cql);
         ResultSet resultSet = session.execute(preparedStatement.bind());
         Row row = resultSet.one();
         System.out.println(row.isNull(0));
-        System.out.println(row.getInt(0));
+        System.out.println(row.getLong(0));
 
         session.close();
 

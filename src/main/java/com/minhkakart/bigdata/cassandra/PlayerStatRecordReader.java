@@ -26,7 +26,7 @@ public class PlayerStatRecordReader extends RecordReader<Text, Text> {
     private long totalItems;
     private long token;
 
-    private CqlSession session;
+    private CqlSession session = null;
 
     @Override
     public void initialize(InputSplit split, TaskAttemptContext context) {
@@ -41,11 +41,13 @@ public class PlayerStatRecordReader extends RecordReader<Text, Text> {
         }
 
         // Connect to Cassandra
-        session = new CqlSessionBuilder()
-                .addContactPoint(new InetSocketAddress(contactPoint, 9042))
-                .withLocalDatacenter(datacenter)
-                .withKeyspace(keyspace)
-                .build();
+        if (session == null) {
+            session = new CqlSessionBuilder()
+                    .addContactPoint(new InetSocketAddress(contactPoint, 9042))
+                    .withLocalDatacenter(datacenter)
+                    .withKeyspace(keyspace)
+                    .build();
+        }
 
         // Execute the query for the specific token range
         long token = ((PlayerStatSplit) split).getToken();
@@ -92,7 +94,10 @@ public class PlayerStatRecordReader extends RecordReader<Text, Text> {
 
     @Override
     public void close() {
-        if (session != null) session.close();
+        if (session != null) {
+            session.close();
+            session = null;
+        }
     }
 
     public long getToken() {
