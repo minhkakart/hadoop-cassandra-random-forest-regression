@@ -9,20 +9,15 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.*;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class PredictPlayerInputFormat extends InputFormat<Text, Text> {
-
-	
-	
-	
 	
 	@Override
-	public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {
+	public List<InputSplit> getSplits(JobContext context) {
 		List<InputSplit> l = new ArrayList<>();
 		l.add(new PlayerStatSplit());
 				
@@ -31,12 +26,12 @@ public class PredictPlayerInputFormat extends InputFormat<Text, Text> {
  	}
 
 	@Override
-	public RecordReader<Text, Text> createRecordReader(InputSplit split, TaskAttemptContext context)
-			throws IOException, InterruptedException {
+	public RecordReader<Text, Text> createRecordReader(InputSplit split, TaskAttemptContext context) {
 		return new RecordReaderPredict();
 	}
 	
-	public static class RecordReaderPredict extends RecordReader<Text, Text> {
+	@SuppressWarnings("DataFlowIssue")
+    public static class RecordReaderPredict extends RecordReader<Text, Text> {
 		
 		private CqlSession session = null;
 		Iterator<Row> iterator;
@@ -45,15 +40,13 @@ public class PredictPlayerInputFormat extends InputFormat<Text, Text> {
 		Text value;
 		
 		@Override
-		public void initialize(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
-			// TODO Auto-generated method stub
+		public void initialize(InputSplit split, TaskAttemptContext context) {
 			Configuration conf = context.getConfiguration();
 	        String contactPoint = conf.get("cassandra.contact.point", "localhost");
 	        String datacenter = conf.get("cassandra.datacenter", "datacenter1");
 	        String keyspace = conf.get("cassandra.keyspace");
 	        String kqTable = conf.get("cassandra.predicted.columnfamily");
-	        
-	        
+			
 	        if (session == null) {
 	            session = new CqlSessionBuilder()
 	                    .addContactPoint(new InetSocketAddress(contactPoint, 9042))
@@ -61,23 +54,23 @@ public class PredictPlayerInputFormat extends InputFormat<Text, Text> {
 	                    .withKeyspace(keyspace)
 	                    .build();
 	        }
-	        String session_query = "Select max(session) from " + kqTable;
-	        PreparedStatement sessionStatement = session.prepare(session_query);
-	        ResultSet rsession = session.execute(sessionStatement.bind());
-	        Row row = rsession.one();
+	        String maxSessionQuery = "Select max(session) from " + kqTable;
+	        PreparedStatement sessionStatement = session.prepare(maxSessionQuery);
+	        ResultSet rsSession = session.execute(sessionStatement.bind());
+	        Row row = rsSession.one();
 	        if (row == null || row.isNull(0))
 	        	throw new RuntimeException();
-	        int max_session = row.getInt(0);
+	        int maxSession = row.getInt(0);
 
 	        
 	        String query = "Select * from " + kqTable + " where session=? allow filtering ";
 	        PreparedStatement queryStatement = session.prepare(query);
-	        ResultSet querysession = session.execute(queryStatement.bind(max_session));
-	        iterator = querysession.iterator();
+	        ResultSet queryResult = session.execute(queryStatement.bind(maxSession));
+	        iterator = queryResult.iterator();
 		}
 
 		@Override
-		public boolean nextKeyValue() throws IOException, InterruptedException {
+		public boolean nextKeyValue() {
 			if (iterator.hasNext()) {
 				Row row = iterator.next();
 				key = new Text(row.getUuid("record_id").toString());
@@ -85,32 +78,27 @@ public class PredictPlayerInputFormat extends InputFormat<Text, Text> {
 				
 				return true;
 			}
-				
 			return false;
 		}
 
 		@Override
-		public Text getCurrentKey() throws IOException, InterruptedException {
-			// TODO Auto-generated method stub
+		public Text getCurrentKey() {
 			return key;
 		}
 
 		@Override
-		public Text getCurrentValue() throws IOException, InterruptedException {
-			// TODO Auto-generated method stub
+		public Text getCurrentValue() {
 			return value;
 		}
 
 		@Override
-		public float getProgress() throws IOException, InterruptedException {
-			// TODO Auto-generated method stub
+		public float getProgress() {
 			if (!iterator.hasNext()) return 1;
 			return 0;
 		}
 
 		@Override
-		public void close() throws IOException {
-			// TODO Auto-generated method stub
+		public void close() {
 			if (session != null)
 				session.close();
 		}

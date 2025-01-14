@@ -21,8 +21,7 @@ public class ScoreMapper extends Mapper<Text, Text, NullWritable, DoubleWritable
 	String query = "Select * from [table] where id=? allow filtering";
 	
 	@Override
-	protected void setup(Mapper<Text, Text, NullWritable, DoubleWritable>.Context context)
-			throws IOException, InterruptedException {
+	protected void setup(Mapper<Text, Text, NullWritable, DoubleWritable>.Context context) {
         Configuration conf = context.getConfiguration();
         // Read configuration
 		String contactPoint = conf.get("cassandra.contact.point", "localhost");
@@ -35,8 +34,7 @@ public class ScoreMapper extends Mapper<Text, Text, NullWritable, DoubleWritable
 				   .withLocalDatacenter(datacenter)
 				   .withKeyspace(keyspace)
 				   .build();
-
-
+		
 		query = query.replace("[table]", InputTable);
 		
 	}
@@ -49,19 +47,14 @@ public class ScoreMapper extends Mapper<Text, Text, NullWritable, DoubleWritable
 		Row row = rs.one();
 		if (row != null) {
 			int real = row.getInt("value_eur");
-			double pred = Double.parseDouble(value.toString());
-			context.write(NullWritable.get(), new DoubleWritable(Math.abs(real-pred)));
+			double predicted = Double.parseDouble(value.toString());
+			context.write(NullWritable.get(), new DoubleWritable(Math.abs(real-predicted)));
 		}
 	}
 
 	@Override
-	protected void cleanup(Mapper<Text, Text, NullWritable, DoubleWritable>.Context context)
-			throws IOException, InterruptedException {
-		if (ss != null)
-			ss.close();
-
+	protected void cleanup(Mapper<Text, Text, NullWritable, DoubleWritable>.Context context) {
+		if (ss != null) ss.close();
 	}
-
-
 	
 }

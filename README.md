@@ -66,10 +66,10 @@ Hadoop for distributed processing and integrates with Cassandra for data storage
           );
         ```
     3. **Prepare the predict table:**
-       Create an empty column family `kq` to store the predicted values.
+       Create an empty column family `predicted` to store the predicted values.
 
         ```
-          CREATE TABLE IF NOT EXISTS bigdata.kq (
+          CREATE TABLE IF NOT EXISTS bigdata.predicted (
                 id UUID PRIMARY KEY,
                 session int,
                 record_id UUID,
@@ -87,17 +87,17 @@ Update the configuration file with the following parameters:
 - `min_samples_split`: Minimum number of samples required to split an internal node
 - `cassandra.contact.point`: Cassandra contact point (e.g., `localhost`)
 - `cassandra.datacenter`: Cassandra datacenter (default: `datacenter1`)
-- `cassandra.keyspace`: Keyspace in Cassandra
-- `cassandra.input.columnfamily`: Input table in Cassandra
-- `cassandra.output.columnfamily`: Output table in Cassandra
-- `cassandra.predicted.columnfamily`: Output table for predicted values in Cassandra
+- `cassandra.keyspace`: Keyspace in Cassandra containing the input and output tables
+- `cassandra.input.columnfamily`: Input table in Cassandra containing the training data
+- `cassandra.output.columnfamily`: Output table in Cassandra to store the trained Random Forest model
+- `cassandra.predicted.columnfamily`: Output table for predicted values in Cassandra to store the predicted values
 
 ## Running the Job
 
 1. **Submit the Hadoop job:**
 
    ```sh
-   hadoop jar target/BigdataBtl-RandomForest-3.0.jar com.minhkakart.bigdata.TrainCassandraJob -D n_estimators=100 -D max_depth=10 -D max_features=5 -D min_samples_split=2 -D cassandra.contact.point=localhost -D cassandra.keyspace=bigdata -D cassandra.input.columnfamily=player_stats -D cassandra.output.columnfamily=trained_trees -D cassandra.predicted.columnfamily=kq
+   hadoop jar target/BigdataBtl-RandomForest.jar com.minhkakart.bigdata.TrainCassandraJob -D n_estimators=100 -D max_depth=10 -D max_features=5 -D min_samples_split=2 -D cassandra.contact.point=localhost -D cassandra.keyspace=bigdata -D cassandra.input.columnfamily=player_stats -D cassandra.output.columnfamily=trained_trees -D cassandra.predicted.columnfamily=predicted
    ```
 
 2. **Monitor the job:**
@@ -119,8 +119,12 @@ Update the configuration file with the following parameters:
     - `train.RandomForestTrainReducer`: Reducer class for training the Random Forest model.
     - `test.RandomForestTestMapper`: Mapper class for testing the Random Forest model.
     - `test.RandomForestTestReducer`: Reducer class for testing
+    -  `score.ScoreMapper`: Mapper class for scoring
+    - `score.ScoreReducer`: Reducer class for scoring
 - `com.minhkakart.bigdata`: Contains the main job class.
     - `TrainCassandraJob`: Main job class for training the Random Forest model.
     - `TestCassandraJob`: Main job class for testing the Random Forest model.
+    - `ScoreJob`: Main job class for scoring the Random Forest model.
+    -  `AllJob`: Main job class for training, testing and scoring the Random Forest model.
 
 ## License

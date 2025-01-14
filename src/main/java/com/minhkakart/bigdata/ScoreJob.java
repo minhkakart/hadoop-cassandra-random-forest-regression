@@ -21,7 +21,7 @@ public class ScoreJob extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
         Configuration conf = getConf();
-        Job job = Job.getInstance(conf, "Random Forest Cassandra Score");
+        Job job = Job.getInstance(conf, "Random Forest Cassandra Scoring");
 
         job.setJarByClass(ScoreJob.class);
         job.setMapperClass(ScoreMapper.class);
@@ -35,8 +35,6 @@ public class ScoreJob extends Configured implements Tool {
 
         job.setInputFormatClass(PredictPlayerInputFormat.class);
         job.setOutputFormatClass(TrainedTreeOutputFormat.class);
-
-//        FileOutputFormat.setOutputPath(job, new Path("D:/btl9"));
 
         return job.waitForCompletion(true) ? 0 : 1;
     }
