@@ -14,7 +14,6 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 public class PredictPlayerInputFormat extends InputFormat<Text, Text> {
 
@@ -24,22 +23,8 @@ public class PredictPlayerInputFormat extends InputFormat<Text, Text> {
 	
 	@Override
 	public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
 		List<InputSplit> l = new ArrayList<>();
-		l.add(new InputSplit() {
-			
-			@Override
-			public String[] getLocations() throws IOException, InterruptedException {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public long getLength() throws IOException, InterruptedException {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-		});
+		l.add(new PlayerStatSplit());
 				
 		return l;
 				
@@ -48,11 +33,10 @@ public class PredictPlayerInputFormat extends InputFormat<Text, Text> {
 	@Override
 	public RecordReader<Text, Text> createRecordReader(InputSplit split, TaskAttemptContext context)
 			throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
-		return null;
+		return new RecordReaderPredict();
 	}
 	
-	public static class RecoredReaderPredict extends RecordReader<Text, Text> {
+	public static class RecordReaderPredict extends RecordReader<Text, Text> {
 		
 		private CqlSession session = null;
 		Iterator<Row> iterator;
@@ -83,18 +67,17 @@ public class PredictPlayerInputFormat extends InputFormat<Text, Text> {
 	        Row row = rsession.one();
 	        if (row == null || row.isNull(0))
 	        	throw new RuntimeException();
-	        long max_session = row.getLong(0);
+	        int max_session = row.getInt(0);
 
 	        
 	        String query = "Select * from " + kqTable + " where session=? allow filtering ";
-	        PreparedStatement queryStatement = session.prepare(session_query);
+	        PreparedStatement queryStatement = session.prepare(query);
 	        ResultSet querysession = session.execute(queryStatement.bind(max_session));
 	        iterator = querysession.iterator();
 		}
 
 		@Override
 		public boolean nextKeyValue() throws IOException, InterruptedException {
-			// TODO Auto-generated method stub
 			if (iterator.hasNext()) {
 				Row row = iterator.next();
 				key = new Text(row.getUuid("record_id").toString());

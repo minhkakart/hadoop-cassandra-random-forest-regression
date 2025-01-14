@@ -5,26 +5,20 @@ import com.datastax.oss.driver.api.core.CqlSessionBuilder;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
-import com.minhkakart.bigdata.algorithm.DecisionTree;
-import com.minhkakart.bigdata.algorithm.Node;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 public class ScoreMapper extends Mapper<Text, Text, NullWritable, DoubleWritable> {
 	
 	CqlSession ss = null;
-	String query = "Select * from [table] where id=? allow fitering";
+	String query = "Select * from [table] where id=? allow filtering";
 	
 	@Override
 	protected void setup(Mapper<Text, Text, NullWritable, DoubleWritable>.Context context)
@@ -42,8 +36,8 @@ public class ScoreMapper extends Mapper<Text, Text, NullWritable, DoubleWritable
 				   .withKeyspace(keyspace)
 				   .build();
 
-		
-		query.replace("[table]", InputTable);
+
+		query = query.replace("[table]", InputTable);
 		
 	}
 	
@@ -63,7 +57,6 @@ public class ScoreMapper extends Mapper<Text, Text, NullWritable, DoubleWritable
 	@Override
 	protected void cleanup(Mapper<Text, Text, NullWritable, DoubleWritable>.Context context)
 			throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
 		if (ss != null)
 			ss.close();
 

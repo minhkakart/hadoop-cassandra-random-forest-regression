@@ -1,11 +1,11 @@
 package com.minhkakart.bigdata.mapreduce.score;
 
-import java.io.IOException;
-
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
+
+import java.io.IOException;
 
 public class ScoreReducer extends Reducer<NullWritable, DoubleWritable, Text, Text> {
 
@@ -19,7 +19,7 @@ public class ScoreReducer extends Reducer<NullWritable, DoubleWritable, Text, Te
 			count++;
 		}
 		
-		System.out.println(sum/count);
+		System.out.println("MAE: " + sum/count);
 	}
 	
 }
