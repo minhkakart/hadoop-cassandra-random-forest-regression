@@ -144,8 +144,7 @@ public class Test {
         String datacenter = "datacenter1";
         String keyspace = "bigdata_btl";
         CqlSession session = new CqlSessionBuilder()
-                .addContactPoint(new InetSocketAddress("nodemaster", 9042))
-                .addContactPoint(new InetSocketAddress("node2", 9042))
+                .addContactPoint(new InetSocketAddress("172.20.10.2", 9042))
                 .withLocalDatacenter(datacenter)
                 .withKeyspace(keyspace)
                 .build();
